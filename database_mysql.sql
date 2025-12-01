@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS clubs (
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'verein') NOT NULL,
     club_id INT DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS shooters (
     last_name VARCHAR(255) NOT NULL,
     club_id INT NOT NULL,
     team_id INT DEFAULT NULL,
-    active TINYINT(1) DEFAULT 1,
+    status ENUM('aktiv', 'inaktiv') DEFAULT 'aktiv',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (club_id) REFERENCES clubs(id) ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS results (
     team_id INT NOT NULL,
     shooter_id INT NOT NULL,
     rings INT NOT NULL,
+    is_counted TINYINT(1) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE,
