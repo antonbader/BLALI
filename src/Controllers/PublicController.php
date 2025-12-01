@@ -17,8 +17,16 @@ class PublicController extends Controller {
         $table = [];
         $matches = [];
         $topShooters = [];
+        $roundDates = [];
 
         if ($compId) {
+            // Rundentermine
+            $roundModel = new \Models\RoundModel();
+            $dates = $roundModel->getDatesByCompetition($compId);
+            foreach($dates as $d) {
+                $roundDates[$d['round_number']] = $d['match_date'];
+            }
+
             // Tabelle
             $sql = "
                 SELECT t.id, t.name,
@@ -56,7 +64,34 @@ class PublicController extends Controller {
             'currentCompId' => $compId,
             'table' => $table,
             'matches' => $matches,
-            'topShooters' => $topShooters
+            'topShooters' => $topShooters,
+            'roundDates' => $roundDates
+        ]);
+    }
+
+    public function matchDetails($matchId) {
+        $matchModel = new \Models\MatchModel();
+        $match = $matchModel->getById($matchId);
+
+        if (!$match) {
+             \Core\Session::setFlash('error', 'Match nicht gefunden');
+             $this->redirect('/');
+        }
+
+        // Ergebnisse laden
+        $db = \Core\Database::getInstance();
+        $results = $db->query("
+            SELECT r.*, s.first_name, s.last_name, t.name as team_name
+            FROM results r
+            JOIN shooters s ON r.shooter_id = s.id
+            JOIN teams t ON r.team_id = t.id
+            WHERE r.match_id = ?
+            ORDER BY t.id, r.rings DESC
+        ", [$matchId])->fetchAll();
+
+        $this->view('public/match_details', [
+            'match' => $match,
+            'results' => $results
         ]);
     }
 }

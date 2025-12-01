@@ -96,6 +96,16 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
+-- 9. Rundentermine
+CREATE TABLE IF NOT EXISTS round_dates (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    competition_id INTEGER NOT NULL,
+    round_number INTEGER NOT NULL,
+    match_date DATE NOT NULL,
+    FOREIGN KEY (competition_id) REFERENCES competitions(id) ON DELETE CASCADE,
+    UNIQUE(competition_id, round_number)
+);
+
 -- Indizes für Performance
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_teams_competition ON teams(competition_id);

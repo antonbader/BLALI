@@ -16,12 +16,12 @@
         </form>
 
         <h2>Vereinsliste</h2>
-        <table>
+        <table class="sortable filterable">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Aktion</th>
+                    <th class="sort-header" data-type="number">ID</th>
+                    <th class="sort-header">Name</th>
+                    <th class="no-filter">Aktion</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,6 +30,7 @@
                     <td><?= $club['id'] ?></td>
                     <td><?= htmlspecialchars($club['name']) ?></td>
                     <td>
+                    <a href="<?= BASIS_URL ?>/admin/editClub/<?= $c['id'] ?>" class="btn">Bearbeiten</a>
                         <a href="<?= BASIS_URL ?>/admin/deleteClub/<?= $club['id'] ?>" class="btn btn-danger" onclick="return confirm('Wirklich löschen? Alle zugehörigen Daten (Teams, Schützen) werden gelöscht!')">Löschen</a>
                     </td>
                 </tr>
@@ -64,13 +65,13 @@
         </form>
 
         <h2>Benutzerliste</h2>
-        <table>
+        <table class="sortable filterable">
             <thead>
                 <tr>
-                    <th>User</th>
-                    <th>Rolle</th>
-                    <th>Verein</th>
-                    <th>Aktion</th>
+                    <th class="sort-header">User</th>
+                    <th class="sort-header">Rolle</th>
+                    <th class="sort-header">Verein</th>
+                    <th class="no-filter">Aktion</th>
                 </tr>
             </thead>
             <tbody>
