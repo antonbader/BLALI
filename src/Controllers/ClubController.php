@@ -31,6 +31,12 @@ class ClubController extends Controller {
         $teamModel = new Team();
         $teams = $teamModel->getByClub($clubId);
 
+        // Shooters für Teams laden für die Anzeige
+        $shooterModel = new Shooter();
+        foreach($teams as &$team) {
+            $team['shooters'] = $shooterModel->getByTeam($team['id']);
+        }
+
         $matchModel = new MatchModel();
         $matches = $matchModel->getOpenByClub($clubId);
 
@@ -49,15 +55,18 @@ class ClubController extends Controller {
         }
 
         // Darf nur bearbeiten, wenn eigener Club beteiligt (oder Admin)
-        if (!Auth::isAdmin() && $match['home_club_id'] != $clubId && $match['guest_club_id'] != $clubId) {
-             Session::setFlash('error', 'Keine Berechtigung für dieses Match.');
-             $this->redirect('/club/dashboard');
-        }
+        if (!Auth::isAdmin()) {
+            // Nur Heim-Mannschaft darf Ergebnisse melden (Anforderung)
+            if ($match['home_club_id'] != $clubId) {
+                 Session::setFlash('error', 'Nur die Heimmannschaft darf Ergebnisse melden.');
+                 $this->redirect('/club/dashboard');
+            }
 
-        // Darf nur bearbeiten, wenn nicht bestätigt (außer Admin)
-        if (!Auth::isAdmin() && $match['status'] === 'bestaetigt') {
-             Session::setFlash('error', 'Match ist bereits bestätigt und kann nicht mehr bearbeitet werden.');
-             $this->redirect('/club/dashboard');
+            // Wenn bestätigt, keine Änderung mehr möglich
+            if ($match['status'] === 'bestaetigt') {
+                 Session::setFlash('error', 'Match ist bereits bestätigt und kann nicht mehr bearbeitet werden.');
+                 $this->redirect('/club/dashboard');
+            }
         }
 
         $shooterModel = new Shooter();
@@ -80,8 +89,7 @@ class ClubController extends Controller {
 
             // Wenn keine Ergebnisse da sind, Kader laden (Pre-Fill)
             if (empty($data)) {
-                 $kader = $shooterModel->getByTeam($teamId); // Hier müsste man Team ID haben, aber getByTeam braucht Team ID.
-                 // $teamId ist die Team ID.
+                 $kader = $shooterModel->getByTeam($teamId);
                  foreach($kader as $s) {
                      $data[] = ['shooter_id' => $s['id'], 'rings' => ''];
                      if (count($data) >= 5) break; // Max 5 vorbelegen
@@ -125,9 +133,6 @@ class ClubController extends Controller {
                          $val = intval($rings[$i]);
                          // Leere Inputs ignorieren, aber 0 ist gültig
                          if ($sid && $rings[$i] !== '') {
-                             // Limit Prüfung entfernt gemäß Anforderung
-                             // if ($val > $match['max_rings']) ...
-
                              $resultModel->save($matchId, $teamId, $sid, $val);
                              $teamRings[] = $val;
                          }

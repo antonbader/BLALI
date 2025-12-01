@@ -49,6 +49,18 @@ class Shooter extends Model {
         return false;
     }
 
+    public function getById($id) {
+        return $this->db->query("SELECT * FROM shooters WHERE id = ?", [$id])->fetch();
+    }
+
+    public function update($id, $firstName, $lastName, $clubId, $teamId) {
+        $this->db->query("
+            UPDATE shooters
+            SET first_name = ?, last_name = ?, club_id = ?, team_id = ?
+            WHERE id = ?
+        ", [$firstName, $lastName, $clubId, $teamId, $id]);
+    }
+
     public function getTopShooters($compId, $limit = 10) {
         return $this->db->query("
             SELECT s.first_name, s.last_name, c.name as club_name,

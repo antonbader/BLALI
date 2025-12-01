@@ -38,11 +38,20 @@
 
     <div style="flex: 1; min-width: 300px;">
         <h2>Meine Mannschaften</h2>
-        <ul>
-            <?php foreach ($teams as $t): ?>
-                <li><?= htmlspecialchars($t['name']) ?></li>
-            <?php endforeach; ?>
-        </ul>
-        <p><small>Mannschaften werden vom Administrator verwaltet.</small></p>
+        <?php foreach ($teams as $t): ?>
+            <div class="team-card" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                <h3><?= htmlspecialchars($t['name']) ?></h3>
+                <?php if(!empty($t['shooters'])): ?>
+                    <ul>
+                        <?php foreach($t['shooters'] as $s): ?>
+                            <li><?= htmlspecialchars($s['first_name'] . ' ' . $s['last_name']) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p><i>Keine Schützen zugewiesen.</i></p>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+        <p><small>Mannschaften und Schützen werden vom Administrator verwaltet.</small></p>
     </div>
 </div>

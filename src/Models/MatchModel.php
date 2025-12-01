@@ -43,7 +43,7 @@ class MatchModel extends Model {
             JOIN teams t1 ON m.home_team_id = t1.id
             JOIN teams t2 ON m.guest_team_id = t2.id
             WHERE (t1.club_id = ? OR t2.club_id = ?)
-              AND m.status = 'offen'
+              AND m.status IN ('offen', 'eingereicht')
             ORDER BY m.round_number
         ", [$clubId, $clubId])->fetchAll();
     }
@@ -71,6 +71,18 @@ class MatchModel extends Model {
                      WHERE id = ?",
                      [$homePoints, $guestPoints, $homeRings, $guestRings, date('Y-m-d'), $id]
         );
+    }
+
+    public function resetScore($id) {
+        // Reset match values
+        $this->db->query("UPDATE matches SET
+            home_points = 0, guest_points = 0,
+            home_total_rings = 0, guest_total_rings = 0,
+            status = 'offen'
+            WHERE id = ?", [$id]);
+
+        // Delete individual results
+        $this->db->query("DELETE FROM results WHERE match_id = ?", [$id]);
     }
 
     public function setStatus($id, $status) {

@@ -2,20 +2,36 @@
 // install.php
 // Dieses Skript initialisiert die Datenbank
 
-require_once __DIR__ . '/config/config.php';
+$config = require __DIR__ . '/config/config.php';
+$dbConfig = require __DIR__ . '/config/db.php';
+
 require_once __DIR__ . '/src/Core/Database.php';
 
 use Core\Database;
 
 try {
     $db = Database::getInstance();
-    $sql = file_get_contents(__DIR__ . '/database_setup.sql');
 
-    // Split SQL by commands if necessary or run at once.
-    // PDO might not support multiple queries in one call for SQLite in all versions,
-    // but usually exec() works for batch if supported.
-    // Safe way: split by semicolon
+    // Select SQL file based on configured database type
+    $type = $dbConfig['type'] ?? 'sqlite';
 
+    if ($type === 'mysql') {
+        $sqlFile = __DIR__ . '/database_mysql.sql';
+        echo "Lade MySQL Schema...<br>";
+    } else {
+        $sqlFile = __DIR__ . '/database_setup.sql';
+        echo "Lade SQLite Schema...<br>";
+    }
+
+    if (!file_exists($sqlFile)) {
+        throw new Exception("SQL Datei nicht gefunden: $sqlFile");
+    }
+
+    $sql = file_get_contents($sqlFile);
+
+    // Execute SQL
+    // For MySQL, splitting by ';' might be fragile if stored procedures were used,
+    // but for this simple schema it is fine.
     $commands = explode(';', $sql);
 
     foreach ($commands as $command) {
