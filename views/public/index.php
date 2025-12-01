@@ -29,7 +29,7 @@
                 <tr>
                     <th>Platz</th>
                     <th>Mannschaft</th>
-                    <th>Spiele</th>
+                    <th>Matches</th>
                     <th>Punkte</th>
                     <th>Ringe</th>
                 </tr>
