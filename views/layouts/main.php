@@ -66,7 +66,7 @@
     </main>
 
     <footer>
-        &copy; <?= date('Y') ?> Blasrohr-Liga V9.0
+        &copy; <?= date('Y') ?> BLALI - Blasrohr-Liga
     </footer>
 
     <script src="<?= BASIS_URL ?>/js/main.js"></script>
