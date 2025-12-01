@@ -72,7 +72,7 @@
                 </span>
             </td>
             <td>
-                    <a href="<?= BASIS_URL ?>/admin/editShooter/<?= $s['id'] ?>" class="btn">Bearbeiten</a>
+                    <a href="<?= BASIS_URL ?>/admin/editShooter/<?= $shooter['id'] ?>" class="btn">Bearbeiten</a>
                 <a href="<?= BASIS_URL ?>/admin/toggleShooterStatus/<?= $shooter['id'] ?>" class="btn">Status umschalten</a>
             </td>
         </tr>

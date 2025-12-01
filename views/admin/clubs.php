@@ -30,7 +30,7 @@
                     <td><?= $club['id'] ?></td>
                     <td><?= htmlspecialchars($club['name']) ?></td>
                     <td>
-                    <a href="<?= BASIS_URL ?>/admin/editClub/<?= $c['id'] ?>" class="btn">Bearbeiten</a>
+                    <a href="<?= BASIS_URL ?>/admin/editClub/<?= $club['id'] ?>" class="btn">Bearbeiten</a>
                         <a href="<?= BASIS_URL ?>/admin/deleteClub/<?= $club['id'] ?>" class="btn btn-danger" onclick="return confirm('Wirklich löschen? Alle zugehörigen Daten (Teams, Schützen) werden gelöscht!')">Löschen</a>
                     </td>
                 </tr>
