@@ -11,6 +11,10 @@
         <h3>Schützen</h3>
         <p>Alle Schützen verwalten</p>
     </a>
+    <a href="<?= BASIS_URL ?>/admin/teams" class="dashboard-card">
+        <h3>Mannschaften</h3>
+        <p>Mannschaften bearbeiten/löschen</p>
+    </a>
     <a href="<?= BASIS_URL ?>/league/index" class="dashboard-card">
         <h3>Wettkampf-Planung</h3>
         <p>Saisons & Spielpläne</p>

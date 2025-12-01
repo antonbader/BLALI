@@ -5,7 +5,7 @@
 <p>Hier können Sie für jede Runde ein Datum festlegen, bis zu dem die Spiele gespielt sein sollen.</p>
 
 <form method="post" action="<?= BASIS_URL ?>/admin/saveRounds/<?= $comp['id'] ?>">
-    <input type="hidden" name="csrf_token" value="<?= \Core\Session::csrfToken() ?>">
+    <input type="hidden" name="csrf_token" value="<?= \Core\Session::generateCsrfToken() ?>">
 
     <table>
         <thead>

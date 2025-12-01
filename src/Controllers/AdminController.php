@@ -10,6 +10,7 @@ use Models\AuditLog;
 use Models\RoundModel;
 use Models\Competition;
 use Models\Club;
+use Models\Team;
 
 class AdminController extends Controller {
 
@@ -328,5 +329,53 @@ class AdminController extends Controller {
             Session::setFlash('success', 'Status geändert.');
         }
         $this->redirect('/admin/shooters');
+    }
+
+    public function teams() {
+        $teamModel = new Team();
+        $teams = $teamModel->getAllWithDetails();
+        $this->view('admin/teams', ['teams' => $teams]);
+    }
+
+    public function deleteTeam($id) {
+        $teamModel = new Team();
+        $teamModel->delete($id);
+        (new AuditLog())->log('team_geloescht', "ID: $id");
+        Session::setFlash('success', 'Mannschaft gelöscht.');
+        $this->redirect('/admin/teams');
+    }
+
+    public function editTeam($id) {
+        $teamModel = new Team();
+        $team = $teamModel->getById($id);
+
+        if (!$team) {
+            Session::setFlash('error', 'Mannschaft nicht gefunden.');
+            $this->redirect('/admin/teams');
+        }
+
+        $db = \Core\Database::getInstance();
+        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
+        $competitions = $db->query("SELECT * FROM competitions WHERE status != 'beendet' ORDER BY created_at DESC")->fetchAll();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                 Session::setFlash('error', 'Sitzung abgelaufen.');
+                 $this->redirect("/admin/editTeam/$id");
+            }
+
+            $name = $this->input('name');
+            $clubId = $this->input('club_id');
+            $compId = $this->input('competition_id');
+
+            if ($name && $clubId && $compId) {
+                $teamModel->update($id, $name, $clubId, $compId);
+                (new AuditLog())->log('team_editiert', "ID: $id ($name)");
+                Session::setFlash('success', 'Mannschaft gespeichert.');
+                $this->redirect('/admin/teams');
+            }
+        }
+
+        $this->view('admin/edit_team', ['team' => $team, 'clubs' => $clubs, 'competitions' => $competitions]);
     }
 }

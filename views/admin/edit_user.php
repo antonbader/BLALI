@@ -3,7 +3,7 @@
 <h1>Benutzer bearbeiten: <?= htmlspecialchars($user['username']) ?></h1>
 
 <form method="post">
-    <input type="hidden" name="csrf_token" value="<?= \Core\Session::csrfToken() ?>">
+    <input type="hidden" name="csrf_token" value="<?= \Core\Session::generateCsrfToken() ?>">
 
     <div class="form-group">
         <label>Benutzername</label>
