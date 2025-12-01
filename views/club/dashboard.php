@@ -27,7 +27,11 @@
                         <td><?= htmlspecialchars($m['guest_team']) ?></td>
                         <td><?= $m['round_number'] ?></td>
                         <td>
-                            <a href="<?= BASIS_URL ?>/club/enterResult/<?= $m['id'] ?>" class="btn">Ergebnisse eingeben</a>
+                            <?php if ($m['home_club_id'] == $currentClubId): ?>
+                                <a href="<?= BASIS_URL ?>/club/enterResult/<?= $m['id'] ?>" class="btn">Ergebnisse eingeben</a>
+                            <?php else: ?>
+                                <button class="btn" disabled title="Nur die Heimmannschaft darf Ergebnisse melden." style="opacity: 0.5; cursor: not-allowed;">Ergebnisse eingeben</button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
