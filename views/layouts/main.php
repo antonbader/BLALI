@@ -69,5 +69,6 @@
     </footer>
 
     <script src="<?= BASIS_URL ?>/js/main.js"></script>
+    <script src="<?= BASIS_URL ?>/js/table.js"></script>
 </body>
 </html>

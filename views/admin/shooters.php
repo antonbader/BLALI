@@ -36,14 +36,14 @@
     </form>
 </div>
 
-<table>
+<table class="sortable filterable">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Verein</th>
-            <th>Team</th>
-            <th>Status</th>
-            <th>Aktion</th>
+            <th class="sort-header">Name</th>
+            <th class="sort-header">Verein</th>
+            <th class="sort-header">Team</th>
+            <th class="sort-header">Status</th>
+            <th class="no-filter">Aktion</th>
         </tr>
     </thead>
     <tbody>
@@ -72,6 +72,7 @@
                 </span>
             </td>
             <td>
+                    <a href="<?= BASIS_URL ?>/admin/editShooter/<?= $s['id'] ?>" class="btn">Bearbeiten</a>
                 <a href="<?= BASIS_URL ?>/admin/toggleShooterStatus/<?= $shooter['id'] ?>" class="btn">Status umschalten</a>
             </td>
         </tr>
