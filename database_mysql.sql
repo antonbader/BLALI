@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS competitions (
     season VARCHAR(50) NOT NULL,
     rounds INT DEFAULT 1,
     max_rings INT DEFAULT 999999,
-    status ENUM('geplant', 'aktiv', 'beendet') DEFAULT 'geplant',
+    status ENUM('geplant', 'aktiv', 'beendet', 'deaktiviert', 'archiviert') DEFAULT 'geplant',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
