@@ -35,6 +35,6 @@
         <a href="<?= BASIS_URL ?>/league/revokeMatch/<?= $match['id'] ?>" class="btn btn-danger">Freigabe widerrufen</a>
     <?php endif; ?>
 
-    <a href="<?= BASIS_URL ?>/club/enterResult/<?= $match['id'] ?>" class="btn">Bearbeiten</a>
+    <a href="<?= BASIS_URL ?>/club/enterResult/<?= $match['id'] ?>" class="btn">Ergebnisse bearbeiten</a>
     <a href="<?= BASIS_URL ?>/league/matches" class="btn" style="background: #999;">Zurück</a>
 </div>

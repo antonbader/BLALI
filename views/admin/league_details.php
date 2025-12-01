@@ -7,7 +7,7 @@
     <div style="flex: 1; min-width: 300px;">
         <h2>Mannschaften</h2>
 
-        <?php if ($comp['status'] === 'geplant'): ?>
+        <?php if ($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert'): ?>
         <form method="post" action="<?= BASIS_URL ?>/league/addTeam/<?= $comp['id'] ?>" style="background: #f9f9f9; padding: 15px; margin-bottom: 15px;">
             <input type="hidden" name="csrf_token" value="<?= \Core\Session::generateCsrfToken() ?>">
             <div class="form-group">
@@ -34,17 +34,32 @@
             <?php endforeach; ?>
         </ul>
 
-        <?php if ($comp['status'] === 'geplant' && count($teams) >= 2 && count($teams) % 2 == 0): ?>
+        <?php if (($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert') && count($teams) >= 2 && count($teams) % 2 == 0): ?>
             <a href="<?= BASIS_URL ?>/league/generateSchedule/<?= $comp['id'] ?>" class="btn" onclick="return confirm('Wettkampfplan generieren? Dies setzt den Status auf AKTIV.')">Wettkampfplan generieren</a>
-        <?php elseif ($comp['status'] === 'geplant'): ?>
+        <?php elseif ($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert'): ?>
             <p style="color: orange;">Um den Wettkampfplan zu generieren, werden mindestens 2 Teams benötigt (gerade Anzahl).</p>
         <?php endif; ?>
 
         <?php if ($comp['status'] === 'aktiv'): ?>
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
-                <h3>Saison-Abschluss</h3>
-                <a href="<?= BASIS_URL ?>/league/generateFinals/<?= $comp['id'] ?>" class="btn" onclick="return confirm('Final-Runde (Top 4) generieren?')">Finals generieren</a>
+                <h3>Verwaltung</h3>
                 <a href="<?= BASIS_URL ?>/league/exportCsv/<?= $comp['id'] ?>" class="btn" target="_blank">Tabelle als CSV</a>
+                <br><br>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/deaktiviert" class="btn" style="background-color: orange;" onclick="return confirm('Wettkampf wirklich deaktivieren? Er ist dann nicht mehr öffentlich sichtbar.')">Wettkampf deaktivieren</a>
+                <br><br>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/archiviert" class="btn" style="background-color: darkred;" onclick="return confirm('Wettkampf abschließen? Er wird ins Archiv verschoben.')">Wettkampf abschließen</a>
+            </div>
+        <?php elseif ($comp['status'] === 'deaktiviert'): ?>
+             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                <h3>Verwaltung</h3>
+                <p><strong>Status: Deaktiviert</strong></p>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/aktiv" class="btn" onclick="return confirm('Wettkampf aktivieren?')">Wettkampf aktivieren</a>
+            </div>
+        <?php elseif ($comp['status'] === 'archiviert'): ?>
+             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                <h3>Verwaltung</h3>
+                <p><strong>Status: Archiviert</strong></p>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/aktiv" class="btn" onclick="return confirm('Wettkampf wieder eröffnen?')">Wettkampf wieder eröffnen</a>
             </div>
         <?php endif; ?>
     </div>
