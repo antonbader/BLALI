@@ -1,4 +1,4 @@
-# Benutzerhandbuch - Blasrohr-Liga V9.0
+# Benutzerhandbuch - BLALI - Blasrohr-Liga
 
 Willkommen beim Ligen-Management-System für die Blasrohr-Liga.
 
