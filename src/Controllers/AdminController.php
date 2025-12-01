@@ -19,7 +19,18 @@ class AdminController extends Controller {
     }
 
     public function dashboard() {
-        $this->view('admin/dashboard');
+        $db = \Core\Database::getInstance();
+
+        // Aktive Wettbewerbe für Rundentermine
+        $activeComps = $db->query("SELECT * FROM competitions WHERE status = 'aktiv'")->fetchAll();
+
+        // Prüfen auf eingereichte Ergebnisse
+        $pendingCount = $db->query("SELECT COUNT(*) as c FROM matches WHERE status = 'eingereicht'")->fetch()['c'];
+
+        $this->view('admin/dashboard', [
+            'activeComps' => $activeComps,
+            'pendingCount' => $pendingCount
+        ]);
     }
 
     public function rounds($compId) {
