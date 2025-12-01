@@ -37,6 +37,7 @@ class MatchModel extends Model {
             SELECT m.*,
                    c.name as comp_name,
                    t1.name as home_team,
+                   t1.club_id as home_club_id,
                    t2.name as guest_team
             FROM matches m
             JOIN competitions c ON m.competition_id = c.id
