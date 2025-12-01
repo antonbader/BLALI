@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS competitions (
     season TEXT NOT NULL, -- z.B. "2023/2024"
     max_rings INTEGER DEFAULT 300, -- Max Ringzahl pro Schütze (z.B. 600 für 60 Schuss)
     rounds INTEGER DEFAULT 1, -- Anzahl der Durchgänge (Hinrunde=1, Rückrunde=2)
-    status TEXT DEFAULT 'geplant', -- 'geplant', 'aktiv', 'beendet'
+    status TEXT DEFAULT 'geplant', -- 'geplant', 'aktiv', 'deaktiviert', 'archiviert'
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
