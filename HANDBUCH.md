@@ -65,7 +65,7 @@ Vereins-Administratoren verwalten die Belange ihres eigenen Vereins und sind fü
 ### 3.1 Login und Dashboard
 *   **Anmeldung**: Nutzen Sie den Link "Anmelden" oben rechts und geben Sie die vom Administrator erhaltenen Zugangsdaten ein.
 *   **Dashboard**: Nach dem Login sehen Sie Ihre persönliche Übersicht. Diese enthält:
-    *   **Offene Spiele**: Eine Liste aller Begegnungen, die aktuell zur Austragung anstehen und an denen Ihr Verein beteiligt ist.
+    *   **Offene Runden**: Eine Liste aller Begegnungen, die aktuell zur Austragung anstehen und an denen Ihr Verein beteiligt ist.
     *   **Mannschaftsübersicht**: Eine Auflistung aller Mannschaften Ihres Vereins, die in aktiven Wettbewerben gemeldet sind.
 
 ### 3.2 Mannschaftsübersicht
@@ -77,7 +77,7 @@ Das wichtigste Recht des Vereins-Admins ist die Eingabe der Wettkampfergebnisse.
 **Wichtiges Prinzip**: Nur die **Heimmannschaft** kann Ergebnisse eintragen. Die Gastmannschaft hat hierfür keine Berechtigung.
 
 **Schritt-für-Schritt Anleitung:**
-1.  Suchen Sie im Dashboard im Bereich "Offene Spiele" die entsprechende Begegnung.
+1.  Suchen Sie im Dashboard im Bereich "Offene Runden" die entsprechende Begegnung.
 2.  Klicken Sie auf den Button **"Ergebnis eingeben"**. (Ist dieser ausgegraut, sind Sie die Gastmannschaft oder das Spiel ist nicht aktiv).
 3.  Es öffnet sich das Erfassungsformular.
 4.  **Kader-Auswahl (Heim & Gast)**: Wählen Sie aus den Dropdown-Menüs für jeden Startplatz den entsprechenden Schützen aus.

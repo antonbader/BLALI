@@ -5,7 +5,7 @@
 <div style="display: flex; gap: 30px; flex-wrap: wrap;">
 
     <div style="flex: 1; min-width: 300px;">
-        <h2>Offene Spiele (Ergebniseingabe)</h2>
+        <h2>Offene Runden (Ergebniseingabe)</h2>
         <?php if (empty($matches)): ?>
             <p>Keine offenen Spiele.</p>
         <?php else: ?>
