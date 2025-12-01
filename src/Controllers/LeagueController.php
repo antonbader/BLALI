@@ -94,6 +94,18 @@ class LeagueController extends Controller {
         $this->redirect("/league/details/$compId");
     }
 
+    public function setStatus($compId, $status) {
+        $compModel = new Competition();
+        try {
+            $compModel->setStatus($compId, $status);
+            (new AuditLog())->log('wettkampf_status_geaendert', "Comp ID: $compId, Status: $status");
+            Session::setFlash('success', "Wettkampf-Status auf '$status' geändert.");
+        } catch (\Exception $e) {
+             Session::setFlash('error', $e->getMessage());
+        }
+        $this->redirect("/league/details/$compId");
+    }
+
     public function matches() {
         $matchModel = new MatchModel();
         $matches = $matchModel->getSubmitted();

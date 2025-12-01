@@ -9,8 +9,8 @@ class PublicController extends Controller {
     public function index() {
         $db = \Core\Database::getInstance();
 
-        // Aktive Wettbewerbe laden
-        $competitions = $db->query("SELECT * FROM competitions WHERE status != 'geplant' ORDER BY created_at DESC")->fetchAll();
+        // Aktive Wettbewerbe laden (nur 'aktiv')
+        $competitions = $db->query("SELECT * FROM competitions WHERE status = 'aktiv' ORDER BY created_at DESC")->fetchAll();
 
         $compId = $this->query('comp_id') ?? ($competitions[0]['id'] ?? null);
 
@@ -92,6 +92,79 @@ class PublicController extends Controller {
         $this->view('public/match_details', [
             'match' => $match,
             'results' => $results
+        ]);
+    }
+
+    public function archive() {
+        $db = \Core\Database::getInstance();
+
+        // Archivierte Wettbewerbe laden
+        $competitions = $db->query("SELECT * FROM competitions WHERE status = 'archiviert' ORDER BY created_at DESC")->fetchAll();
+
+        // Details für ausgewählten Wettkampf laden (optional, wenn einer gewählt wurde)
+        // Wir nutzen hier die gleiche Logik wie im Index, aber für 'archiviert'.
+        // Falls kein compId gewählt, zeigen wir nur die Liste.
+
+        $compId = $this->query('comp_id') ?? ($competitions[0]['id'] ?? null);
+
+        $table = [];
+        $matches = [];
+        $topShooters = [];
+        $roundDates = [];
+
+        if ($compId) {
+            // Checken ob auch wirklich archiviert
+            $comp = $db->query("SELECT * FROM competitions WHERE id = ?", [$compId])->fetch();
+            if ($comp && $comp['status'] === 'archiviert') {
+                 // Rundentermine
+                $roundModel = new \Models\RoundModel();
+                $dates = $roundModel->getDatesByCompetition($compId);
+                foreach($dates as $d) {
+                    $roundDates[$d['round_number']] = $d['match_date'];
+                }
+
+                // Tabelle
+                $sql = "
+                    SELECT t.id, t.name,
+                           SUM(CASE
+                               WHEN m.home_team_id = t.id THEN m.home_points
+                               WHEN m.guest_team_id = t.id THEN m.guest_points
+                               ELSE 0 END) as points,
+                           SUM(CASE
+                               WHEN m.home_team_id = t.id THEN m.home_total_rings
+                               WHEN m.guest_team_id = t.id THEN m.guest_total_rings
+                               ELSE 0 END) as rings,
+                           COUNT(m.id) as matches_played
+                    FROM teams t
+                    LEFT JOIN matches m ON (m.home_team_id = t.id OR m.guest_team_id = t.id)
+                                       AND m.competition_id = ?
+                                       AND m.status = 'bestaetigt'
+                    WHERE t.competition_id = ?
+                    GROUP BY t.id
+                    ORDER BY points DESC, rings DESC
+                ";
+
+                $table = $db->query($sql, [$compId, $compId])->fetchAll();
+
+                // Matches
+                $matchModel = new \Models\MatchModel();
+                $matches = $matchModel->getByCompetition($compId);
+
+                // Top Schützen
+                $shooterModel = new Shooter();
+                $topShooters = $shooterModel->getTopShooters($compId);
+            } else {
+                $compId = null; // Nicht anzeigen wenn nicht archiviert
+            }
+        }
+
+        $this->view('public/archive', [
+            'competitions' => $competitions,
+            'currentCompId' => $compId,
+            'table' => $table,
+            'matches' => $matches,
+            'topShooters' => $topShooters,
+            'roundDates' => $roundDates
         ]);
     }
 }

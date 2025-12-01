@@ -42,8 +42,24 @@
 
         <?php if ($comp['status'] === 'aktiv'): ?>
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
-                <h3>Saison-Abschluss</h3>
+                <h3>Verwaltung</h3>
                 <a href="<?= BASIS_URL ?>/league/exportCsv/<?= $comp['id'] ?>" class="btn" target="_blank">Tabelle als CSV</a>
+                <br><br>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/deaktiviert" class="btn" style="background-color: orange;" onclick="return confirm('Wettkampf wirklich deaktivieren? Er ist dann nicht mehr öffentlich sichtbar.')">Wettkampf deaktivieren</a>
+                <br><br>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/archiviert" class="btn" style="background-color: darkred;" onclick="return confirm('Wettkampf abschließen? Er wird ins Archiv verschoben.')">Wettkampf abschließen</a>
+            </div>
+        <?php elseif ($comp['status'] === 'deaktiviert'): ?>
+             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                <h3>Verwaltung</h3>
+                <p><strong>Status: Deaktiviert</strong></p>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/aktiv" class="btn" onclick="return confirm('Wettkampf aktivieren?')">Wettkampf aktivieren</a>
+            </div>
+        <?php elseif ($comp['status'] === 'archiviert'): ?>
+             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                <h3>Verwaltung</h3>
+                <p><strong>Status: Archiviert</strong></p>
+                <a href="<?= BASIS_URL ?>/league/setStatus/<?= $comp['id'] ?>/aktiv" class="btn" onclick="return confirm('Wettkampf wieder eröffnen?')">Wettkampf wieder eröffnen</a>
             </div>
         <?php endif; ?>
     </div>

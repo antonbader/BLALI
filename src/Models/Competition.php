@@ -22,6 +22,14 @@ class Competition extends Model {
         return $this->db->query("SELECT * FROM competitions WHERE id = ?", [$id])->fetch();
     }
 
+    public function setStatus($id, $status) {
+        $validStatuses = ['geplant', 'aktiv', 'deaktiviert', 'archiviert'];
+        if (!in_array($status, $validStatuses)) {
+            throw new \Exception("Ungültiger Status: $status");
+        }
+        $this->db->query("UPDATE competitions SET status = ? WHERE id = ?", [$status, $id]);
+    }
+
     // Teams für einen Wettkampf
     public function getTeams($competitionId) {
         return $this->db->query("

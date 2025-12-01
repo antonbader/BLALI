@@ -40,6 +40,7 @@
         </div>
         <nav>
             <a href="<?= BASIS_URL ?>/">Tabelle & Wettkampfplan</a>
+            <a href="<?= BASIS_URL ?>/public/archive">Archiv</a>
             <?php if (\Core\Auth::check()): ?>
                 <?php if (\Core\Auth::isAdmin()): ?>
                     <a href="<?= BASIS_URL ?>/admin/dashboard">Admin Dashboard</a>
