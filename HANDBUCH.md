@@ -57,11 +57,10 @@ Sobald Vereine Ergebnisse eingetragen haben, erscheinen diese unter **Ergebnis-F
 2. Klicken Sie auf **Freigeben**, um das Ergebnis für die offizielle Tabelle zu übernehmen.
 3. Sie können Ergebnisse auch **Bearbeiten** oder eine bereits erteilte Freigabe **Widerrufen**.
 
-### Saison-Abschluss & Finals
+### Saison-Abschluss
 Wenn die reguläre Saison beendet ist:
 1. Gehen Sie in die **Wettkampf-Details**.
-2. Klicken Sie auf **Finals generieren**, um Halbfinal-Paarungen (Top 4) zu erstellen.
-3. Klicken Sie auf **Tabelle als CSV**, um den aktuellen Stand zu exportieren.
+2. Klicken Sie auf **Tabelle als CSV**, um den aktuellen Stand zu exportieren.
 
 <a name="verein"></a>
 ## 4. Für Vereins-Admins

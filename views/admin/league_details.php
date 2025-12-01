@@ -43,7 +43,6 @@
         <?php if ($comp['status'] === 'aktiv'): ?>
             <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 10px;">
                 <h3>Saison-Abschluss</h3>
-                <a href="<?= BASIS_URL ?>/league/generateFinals/<?= $comp['id'] ?>" class="btn" onclick="return confirm('Final-Runde (Top 4) generieren?')">Finals generieren</a>
                 <a href="<?= BASIS_URL ?>/league/exportCsv/<?= $comp['id'] ?>" class="btn" target="_blank">Tabelle als CSV</a>
             </div>
         <?php endif; ?>

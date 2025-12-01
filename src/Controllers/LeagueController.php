@@ -144,18 +144,6 @@ class LeagueController extends Controller {
         $this->view('admin/match_details', ['match' => $match, 'results' => $results]);
     }
 
-    public function generateFinals($compId) {
-        $compModel = new Competition();
-        try {
-            $compModel->generateFinals($compId);
-            (new AuditLog())->log('finals_generiert', "Comp ID: $compId");
-            Session::setFlash('success', 'Final-Runde generiert.');
-        } catch (\Exception $e) {
-            Session::setFlash('error', $e->getMessage());
-        }
-        $this->redirect("/league/details/$compId");
-    }
-
     public function exportCsv($compId) {
         $db = \Core\Database::getInstance();
         // Tabelle berechnen

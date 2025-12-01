@@ -40,7 +40,7 @@ class ClubController extends Controller {
         $matchModel = new MatchModel();
         $matches = $matchModel->getOpenByClub($clubId);
 
-        $this->view('club/dashboard', ['teams' => $teams, 'matches' => $matches]);
+        $this->view('club/dashboard', ['teams' => $teams, 'matches' => $matches, 'currentClubId' => $clubId]);
     }
 
     public function enterResult($matchId) {
