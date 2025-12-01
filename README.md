@@ -1,57 +1,104 @@
-# BLALI - Blasrohr-Liga
+# Blasrohr-Liga Verwaltungssystem (BLALI)
 
-## Installation
+## 1. Einführung
 
-Diese Software ist so konzipiert, dass sie in einem beliebigen Verzeichnis auf einem Webserver installiert werden kann.
+Das Blasrohr-Liga Verwaltungssystem (BLALI) ist eine spezialisierte Webanwendung zur Organisation und Durchführung von Blasrohr-Wettkämpfen im Ligen-Betrieb. Die Software ermöglicht die vollständige Verwaltung von Vereinen, Schützen, Mannschaften sowie die automatisierte Erstellung von Spielplänen und die Erfassung von Wettkampfergebnissen.
 
-### Voraussetzungen
-- Webserver (Apache, Nginx, etc.)
-- PHP 7.4 oder höher
-- PHP SQLite Erweiterung (Standardmäßig aktiviert)
-- Schreibrechte auf dem Verzeichnis `data/` (wird automatisch erstellt)
+Die Anwendung wurde als native PHP-Lösung konzipiert und verzichtet bewusst auf große externe Frameworks, um eine maximale Flexibilität, Performance und einfache Anpassbarkeit zu gewährleisten. Die Architektur folgt dem Model-View-Controller (MVC) Entwurfsmuster.
 
-### Installationsschritte
+## 2. Systemanforderungen
 
-1. **Dateien kopieren**
-   Kopieren Sie alle Dateien in das gewünschte Verzeichnis auf Ihrem Webserver.
+Um das System erfolgreich zu betreiben, muss die Serverumgebung folgende Voraussetzungen erfüllen:
 
-2. **Webserver Konfiguration**
-   Das Document Root des Webservers (oder Alias) sollte idealerweise auf den Ordner `public/` zeigen.
-   Falls dies nicht möglich ist und die Installation in einem Unterordner erfolgt (z.B. `example.com/liga/public/`), passt sich die Software automatisch an.
+*   **Webserver**: Apache, Nginx oder IIS
+*   **PHP-Version**: 7.4 oder höher
+*   **PHP-Erweiterungen**:
+    *   `pdo` (PHP Data Objects)
+    *   `pdo_mysql` (für MySQL/MariaDB Nutzung)
+    *   `pdo_sqlite` (für SQLite Nutzung)
+*   **Dateiberechtigungen**: Schreibrechte für den Webserver im Verzeichnis `data/` (wird bei Bedarf erstellt) und `config/` (falls Schreibvorgänge nötig sind, standardmäßig nur Lesen).
 
-   Stellen Sie sicher, dass `.htaccess` Dateien verarbeitet werden (`AllowOverride All` in Apache).
+## 3. Installation
 
-3. **Datenbank Initialisierung**
-   Führen Sie einmalig das Installations-Skript aus, indem Sie es im Browser aufrufen (passen Sie den Pfad ggf. an):
+Die Installation ist so konzipiert, dass sie flexibel in jedem Verzeichnis (Root oder Unterverzeichnis) erfolgen kann.
 
-   `http://ihre-domain.de/pfad-zur-installation/install.php`
+### Schritt 1: Dateiübertragung
+Kopieren Sie sämtliche Projektdateien in das gewünschte Verzeichnis auf Ihrem Webserver.
 
-   Dies erstellt die Datenbank im Ordner `data/` und legt den initialen Admin-User an.
+### Schritt 2: Webserver-Konfiguration
+Das `Document Root` Ihres Webservers sollte idealerweise auf den Ordner `public/` zeigen, um die Sicherheit der Anwendungsdateien zu maximieren.
+Falls dies nicht möglich ist (z.B. bei Shared Hosting in einem Unterverzeichnis), erkennt die Anwendung ihren Basispfad automatisch.
 
-4. **Sicherheit**
-   Löschen Sie die Datei `install.php` nach erfolgreicher Installation.
-   Sichern Sie den Ordner `data/` gegen direkten Web-Zugriff (z.B. via `.htaccess` `Deny from all` im `data` Ordner, falls dieser im Web-Root liegt). In der Standard-Struktur liegt `data/` parallel zu `public/` und ist somit ohnehin nicht direkt via Web erreichbar.
+**Apache:**
+Stellen Sie sicher, dass das Modul `mod_rewrite` aktiviert ist und `.htaccess`-Dateien verarbeitet werden (`AllowOverride All`).
 
-### Erster Login
+### Schritt 3: Datenbank-Konfiguration
+Das System unterstützt sowohl MySQL (Standard) als auch SQLite. Die Konfiguration erfolgt in der Datei `config/db.php`.
 
-- **URL**: `http://ihre-domain.de/pfad/public/`
-- **Benutzer**: `admin`
-- **Passwort**: `admin`
+1.  Öffnen Sie die Datei `config/db.php`.
+2.  Wählen Sie Ihren Datenbank-Typ:
 
-Bitte ändern Sie das Passwort umgehend nach dem ersten Login!
+    **Option A: MySQL / MariaDB**
+    Setzen Sie `'type'` auf `'mysql'` und tragen Sie Ihre Zugangsdaten ein:
+    ```php
+    return [
+        'type' => 'mysql',
+        'host' => 'localhost',     // Datenbank-Host
+        'dbname' => 'blasrohr_db', // Datenbank-Name
+        'user' => 'db_user',       // Datenbank-Benutzer
+        'pass' => 'geheim',        // Datenbank-Passwort
+        // ...
+    ];
+    ```
 
-## Ordnerstruktur
+    **Option B: SQLite**
+    Setzen Sie `'type'` auf `'sqlite'`. Die Datenbankdatei wird standardmäßig im Ordner `data/` erstellt.
+    ```php
+    return [
+        'type' => 'sqlite',
+        // ...
+        'sqlite_file' => __DIR__ . '/../data/blasrohr.sqlite',
+    ];
+    ```
 
-- `public/`: Öffentlich zugängliche Dateien (index.php, CSS, JS).
-- `src/`: Quellcode der Anwendung (MVC).
-- `views/`: HTML Templates.
-- `config/`: Konfiguration.
-- `data/`: SQLite Datenbank (wird erstellt).
+### Schritt 4: Initialisierung
+Rufen Sie das Installationsskript über Ihren Browser auf, um die Datenbanktabellen anzulegen und den ersten Administrator zu erstellen:
 
-## Features
+`http://<ihre-domain>/<pfad-zur-installation>/install.php`
 
-- MVC Architektur ohne Frameworks
-- Rollenbasierte Zugriffsrechte (Admin, Verein)
-- Automatische Spielplan-Erstellung (Round Robin)
-- Ergebnis-Management mit Freigabe-Workflow
-- Responsive Design (Mobile First)
+Folgen Sie den Anweisungen auf dem Bildschirm. Nach erfolgreicher Installation wird ein Standard-Administrator angelegt.
+
+### Schritt 5: Abschluss und Sicherheit
+Nach der erfolgreichen Installation müssen folgende Schritte zur Sicherheit des Systems durchgeführt werden:
+1.  **Löschen** Sie die Datei `install.php` vom Server.
+2.  Stellen Sie sicher, dass der Ordner `data/` (falls vorhanden und außerhalb des Webroots) nicht öffentlich zugänglich ist, oder durch eine `.htaccess` Datei geschützt ist (bei Apache).
+
+## 4. Technische Architektur
+
+Das Projekt ist modular nach dem MVC-Muster aufgebaut:
+
+### Verzeichnisstruktur
+
+*   `config/`: Enthält Konfigurationsdateien für Datenbank und globale Einstellungen.
+*   `data/`: Speicherort für SQLite-Datenbankdateien (falls verwendet).
+*   `public/`: Öffentlich zugängliches Verzeichnis. Enthält den Front-Controller (`index.php`) sowie statische Assets (CSS, JavaScript).
+*   `src/`: Kern der Anwendung (Quellcode).
+    *   `Controllers/`: Verarbeitet Benutzereingaben und steuert den Programmfluss.
+    *   `Models/`: Repräsentiert die Datenstruktur und Geschäftslogik (Datenbankzugriffe).
+    *   `Core/`: Basisklassen für Routing, Datenbankverbindung, Authentifizierung und Session-Management.
+*   `views/`: HTML-Templates für die Ausgabe.
+
+### Routing
+Das Routing erfolgt über die `Core\Router`-Klasse. URLs folgen dem Schema `/Controller/Action/Parameter`. Die Anwendung ermittelt dynamisch das Basisverzeichnis, sodass keine festen Pfade in der Konfiguration hinterlegt werden müssen.
+
+## 5. Erste Schritte
+
+Melden Sie sich nach der Installation unter folgender URL an:
+
+`http://<ihre-domain>/<pfad>/public/`
+
+**Standard-Zugangsdaten:**
+*   Benutzer: `admin`
+*   Passwort: `admin`
+
+**Wichtig:** Ändern Sie das Passwort umgehend nach der ersten Anmeldung.
