@@ -17,7 +17,7 @@ $scriptDir = rtrim($scriptDir, '/');
 define('BASIS_URL', $protocol . "://" . $host . $scriptDir);
 define('ROOT_PFAD', dirname(__DIR__));
 define('VIEW_PFAD', ROOT_PFAD . '/views');
-define('APP_NAME', 'Blasrohr-Liga V9.0');
+define('APP_NAME', 'BLALI - Blasrohr-Liga');
 
 // Fehleranzeige (für Entwicklung an, später ausschalten)
 ini_set('display_errors', 1);
