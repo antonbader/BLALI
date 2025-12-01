@@ -88,8 +88,10 @@
                         <td><?= ucfirst($m['status']) ?></td>
                         <td>
                             <?php if ($m['status'] != 'offen'): ?>
-                                <?= $m['home_points'] ?> : <?= $m['guest_points'] ?>
-                                <small>(<?= $m['home_total_rings'] ?>:<?= $m['guest_total_rings'] ?>)</small>
+                                <a href="<?= BASIS_URL ?>/club/enterResult/<?= $m['id'] ?>" title="Ergebnis bearbeiten" style="text-decoration: none; color: inherit;">
+                                    <?= $m['home_points'] ?> : <?= $m['guest_points'] ?>
+                                    <small>(<?= $m['home_total_rings'] ?>:<?= $m['guest_total_rings'] ?>)</small>
+                                </a>
                             <?php else: ?>
                                 - : -
                             <?php endif; ?>
