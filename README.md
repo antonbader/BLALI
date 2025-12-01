@@ -1,4 +1,4 @@
-# Blasrohr-Liga V9.0
+# BLALI - Blasrohr-Liga
 
 ## Installation
 
