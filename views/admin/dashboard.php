@@ -21,6 +21,20 @@
     </a>
 </div>
 
+<h2>Aktive Wettbewerbe (Rundentermine)</h2>
+<ul>
+    <?php
+    $db = \Core\Database::getInstance();
+    $comps = $db->query("SELECT * FROM competitions WHERE status != 'geplant'")->fetchAll();
+    foreach($comps as $c):
+    ?>
+    <li>
+        <strong><?= htmlspecialchars($c['name']) ?></strong>
+        - <a href="<?= BASIS_URL ?>/admin/rounds/<?= $c['id'] ?>">Rundentermine verwalten</a>
+    </li>
+    <?php endforeach; ?>
+</ul>
+
 <style>
     .dashboard-card {
         background: #fff;

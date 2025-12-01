@@ -54,6 +54,7 @@
             <thead>
                 <tr>
                     <th>Runde</th>
+                    <th>Datum</th>
                     <th>Heim</th>
                     <th>Gast</th>
                     <th>Ergebnis</th>
@@ -63,11 +64,22 @@
                 <?php foreach ($matches as $m): ?>
                 <tr>
                     <td><?= $m['round_number'] ?></td>
+                    <td>
+                        <?php
+                            if (!empty($roundDates[$m['round_number']])) {
+                                echo date('d.m.Y', strtotime($roundDates[$m['round_number']]));
+                            } else {
+                                echo '-';
+                            }
+                        ?>
+                    </td>
                     <td><?= htmlspecialchars($m['home_team']) ?></td>
                     <td><?= htmlspecialchars($m['guest_team']) ?></td>
                     <td>
                         <?php if ($m['status'] == 'bestaetigt'): ?>
-                            <b><?= $m['home_points'] ?> : <?= $m['guest_points'] ?></b> <small>(<?= $m['home_total_rings'] ?>:<?= $m['guest_total_rings'] ?>)</small>
+                            <a href="<?= BASIS_URL ?>/public/matchDetails/<?= $m['id'] ?>">
+                                <b><?= $m['home_points'] ?> : <?= $m['guest_points'] ?></b> <small>(<?= $m['home_total_rings'] ?>:<?= $m['guest_total_rings'] ?>)</small>
+                            </a>
                         <?php else: ?>
                             - : -
                         <?php endif; ?>
