@@ -81,6 +81,7 @@
                     <td><?= $user['role'] ?></td>
                     <td><?= $user['club_name'] ?? '-' ?></td>
                     <td>
+                        <a href="<?= BASIS_URL ?>/admin/editUser/<?= $user['id'] ?>" class="btn">Bearbeiten</a>
                         <?php if ($user['id'] != \Core\Auth::id()): ?>
                         <a href="<?= BASIS_URL ?>/admin/deleteUser/<?= $user['id'] ?>" class="btn btn-danger" onclick="return confirm('Benutzer löschen?')">Löschen</a>
                         <?php else: ?>

@@ -16,16 +16,15 @@
         </thead>
         <tbody>
             <?php
-            // Berechne Gesamtrunden (Hin- und ggf. Rückrunde)
-            // Round Robin: (Teams - 1) * rounds
-            // Wir nehmen einfach an, dass der Competition Parameter 'rounds' die Durchgänge meint.
-            // Aber eigentlich wissen wir nicht genau wie viele Spieltage es gibt ohne Matches zu zählen.
-            // Workaround: Wir schauen in die Matches Tabelle für diesen Wettbewerb, wie viele Runden es gibt.
-
-            $db = \Core\Database::getInstance();
-            $maxRound = $db->query("SELECT MAX(round_number) as max_r FROM matches WHERE competition_id = ?", [$comp['id']])->fetch()['max_r'];
-            if (!$maxRound) $maxRound = 0;
-
+            if ($maxRound < 1):
+            ?>
+            <tr>
+                <td colspan="2">
+                    Keine Spieltage gefunden. Bitte generieren Sie erst den Wettkampfplan für diese Saison.
+                </td>
+            </tr>
+            <?php
+            else:
             for($r = 1; $r <= $maxRound; $r++):
                 $val = $datesMap[$r] ?? '';
             ?>
@@ -35,7 +34,7 @@
                     <input type="date" name="dates[<?= $r ?>]" value="<?= $val ?>">
                 </td>
             </tr>
-            <?php endfor; ?>
+            <?php endfor; endif; ?>
         </tbody>
     </table>
 

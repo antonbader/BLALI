@@ -38,9 +38,15 @@ class AdminController extends Controller {
             $datesMap[$d['round_number']] = $d['match_date'];
         }
 
+        // Ermittle max Runden
+        $db = \Core\Database::getInstance();
+        $maxRound = $db->query("SELECT MAX(round_number) as max_r FROM matches WHERE competition_id = ?", [$comp['id']])->fetch()['max_r'];
+        if (!$maxRound) $maxRound = 0;
+
         $this->view('admin/rounds', [
             'comp' => $comp,
-            'datesMap' => $datesMap
+            'datesMap' => $datesMap,
+            'maxRound' => $maxRound
         ]);
     }
 
@@ -142,6 +148,54 @@ class AdminController extends Controller {
         (new AuditLog())->log('verein_geloescht', "ID: $id");
         Session::setFlash('success', 'Verein gelöscht.');
         $this->redirect('/admin/clubs');
+    }
+
+    public function editUser($id) {
+        if ($id == 1 && Auth::id() != 1) {
+            Session::setFlash('error', 'Haupt-Admin kann nur von sich selbst bearbeitet werden.');
+            $this->redirect('/admin/clubs');
+        }
+
+        $userModel = new User();
+        $user = $userModel->getById($id);
+
+        if (!$user) {
+            Session::setFlash('error', 'User nicht gefunden.');
+            $this->redirect('/admin/clubs');
+        }
+
+        $db = \Core\Database::getInstance();
+        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                 Session::setFlash('error', 'Sitzung abgelaufen.');
+                 $this->redirect("/admin/editUser/$id");
+             }
+
+             $username = $this->input('username');
+             $password = $this->input('password'); // Optional
+             $club_id = $this->input('club_id') ?: null;
+             $role = $club_id ? 'verein' : 'admin';
+
+             if ($username) {
+                 try {
+                     $userModel->update($id, $username, $role, $club_id);
+
+                     if (!empty($password)) {
+                         $userModel->updatePassword($id, $password);
+                     }
+
+                     (new AuditLog())->log('user_editiert', "ID: $id ($username)");
+                     Session::setFlash('success', 'Benutzer gespeichert.');
+                     $this->redirect('/admin/clubs');
+                 } catch (\Exception $e) {
+                     Session::setFlash('error', 'Fehler: Username vergeben?');
+                 }
+             }
+        }
+
+        $this->view('admin/edit_user', ['user' => $user, 'clubs' => $clubs]);
     }
 
     public function editClub($id) {

@@ -10,6 +10,10 @@ class User extends Model {
         return $stmt->fetch();
     }
 
+    public function getById($id) {
+        return $this->db->query("SELECT * FROM users WHERE id = ?", [$id])->fetch();
+    }
+
     public function create($username, $password, $role = 'verein', $club_id = null) {
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $this->db->query(
@@ -22,6 +26,13 @@ class User extends Model {
     public function updatePassword($id, $newPassword) {
         $hash = password_hash($newPassword, PASSWORD_DEFAULT);
         $this->db->query("UPDATE users SET password = ? WHERE id = ?", [$hash, $id]);
+    }
+
+    public function update($id, $username, $role, $club_id) {
+        $this->db->query("
+            UPDATE users SET username = ?, role = ?, club_id = ?
+            WHERE id = ?
+        ", [$username, $role, $club_id, $id]);
     }
 
     // Holt alle User mit Vereinsnamen (für Admin Dashboard)
