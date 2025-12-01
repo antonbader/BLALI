@@ -69,7 +69,7 @@ Vereins-Administratoren verwalten die Belange ihres eigenen Vereins und sind fü
     *   **Mannschaftsübersicht**: Eine Auflistung aller Mannschaften Ihres Vereins, die in aktiven Wettbewerben gemeldet sind.
 
 ### 3.2 Mannschaftsübersicht
-Hier sehen Sie, welche Mannschaften Ihres Vereins aktuell in welchen Ligen spielen. Diese Zuweisung erfolgt zentral durch den Administrator und kann vom Verein nur eingesehen, nicht aber geändert werden.
+Hier sehen Sie, welche Mannschaften Ihres Vereins aktuell in welchen Ligen schießen. Diese Zuweisung erfolgt zentral durch den Administrator und kann vom Verein nur eingesehen, nicht aber geändert werden.
 
 ### 3.3 Ergebnisse erfassen (Nur Heimspiele)
 Das wichtigste Recht des Vereins-Admins ist die Eingabe der Wettkampfergebnisse.
@@ -78,7 +78,7 @@ Das wichtigste Recht des Vereins-Admins ist die Eingabe der Wettkampfergebnisse.
 
 **Schritt-für-Schritt Anleitung:**
 1.  Suchen Sie im Dashboard im Bereich "Offene Runden" die entsprechende Begegnung.
-2.  Klicken Sie auf den Button **"Ergebnis eingeben"**. (Ist dieser ausgegraut, sind Sie die Gastmannschaft oder das Spiel ist nicht aktiv).
+2.  Klicken Sie auf den Button **"Ergebnis eingeben"**. (Ist dieser ausgegraut, sind Sie die Gastmannschaft oder der Wettkampf ist nicht aktiv).
 3.  Es öffnet sich das Erfassungsformular.
 4.  **Kader-Auswahl (Heim & Gast)**: Wählen Sie aus den Dropdown-Menüs für jeden Startplatz den entsprechenden Schützen aus.
     *   Das System zeigt Ihnen nur Schützen an, die dem jeweiligen Verein zugeordnet sind.
@@ -123,14 +123,13 @@ Die Basis des Systems sind Vereine und deren Benutzerkonten.
 Alle Sportler müssen zentral erfasst werden.
 1.  Menüpunkt "Schützen" -> "Neuer Schütze".
 2.  Geben Sie Vorname, Nachname und zwingend den **Verein** an.
-3.  Optional können Sie Schützenpass-Nummern oder Geburtsjahre hinterlegen.
-4.  Schützen können jederzeit bearbeitet oder einem anderen Verein zugewiesen werden (Vereinswechsel).
+3.  Schützen können jederzeit bearbeitet oder einem anderen Verein zugewiesen werden (Vereinswechsel).
 
 ### 4.4 Wettbewerbsmanagement
 
 #### 4.4.1 Neuen Wettbewerb anlegen
 1.  Navigieren Sie zu "Wettbewerbe" -> "Neu erstellen".
-2.  Geben Sie einen Namen (z.B. "Kreisliga A 2024") und die Saison an.
+2.  Geben Sie einen Namen (z.B. "Kreisliga A") und die Saison an.
 3.  Legen Sie die Anzahl der Runden fest (1 = nur Hinrunde, 2 = Hin- und Rückrunde).
 4.  Der Wettbewerb wird im Status **"Geplant"** erstellt.
 
@@ -139,7 +138,7 @@ Alle Sportler müssen zentral erfasst werden.
 1.  Im Bereich "Teilnehmende Mannschaften" fügen Sie Teams hinzu.
 2.  Wählen Sie den Verein aus und vergeben Sie einen Mannschaftsnamen (z.B. "SV Holzhausen I").
 3.  Wiederholen Sie dies für alle Teilnehmer.
-4.  **Achtung**: Für den Spielplan-Algorithmus wird eine gerade Anzahl an Mannschaften benötigt. Fügen Sie ggf. ein "Freilos"-Team hinzu, falls die Anzahl ungerade ist.
+4.  **Achtung**: Für den Spielplan-Algorithmus wird aktuell eine gerade Anzahl an Mannschaften benötigt. Fügen Sie ggf. ein "Freilos"-Team & -Verein hinzu, falls die Anzahl ungerade ist.
 
 #### 4.4.3 Spielplan generieren (Round Robin)
 Wenn alle Mannschaften angelegt sind:
