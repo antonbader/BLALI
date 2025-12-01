@@ -11,6 +11,10 @@
         <h3>Schützen</h3>
         <p>Alle Schützen verwalten</p>
     </a>
+    <a href="<?= BASIS_URL ?>/admin/teams" class="dashboard-card">
+        <h3>Mannschaften</h3>
+        <p>Mannschaften bearbeiten/löschen</p>
+    </a>
     <a href="<?= BASIS_URL ?>/league/index" class="dashboard-card">
         <h3>Wettkampf-Planung</h3>
         <p>Saisons & Spielpläne</p>
@@ -20,6 +24,20 @@
         <p>Eingereichte Ergebnisse prüfen</p>
     </a>
 </div>
+
+<h2>Aktive Wettbewerbe (Rundentermine)</h2>
+<ul>
+    <?php
+    $db = \Core\Database::getInstance();
+    $comps = $db->query("SELECT * FROM competitions WHERE status != 'geplant'")->fetchAll();
+    foreach($comps as $c):
+    ?>
+    <li>
+        <strong><?= htmlspecialchars($c['name']) ?></strong>
+        - <a href="<?= BASIS_URL ?>/admin/rounds/<?= $c['id'] ?>">Rundentermine verwalten</a>
+    </li>
+    <?php endforeach; ?>
+</ul>
 
 <style>
     .dashboard-card {

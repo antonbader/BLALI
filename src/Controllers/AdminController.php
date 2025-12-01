@@ -7,6 +7,10 @@ use Core\Session;
 use Models\User;
 use Models\Shooter;
 use Models\AuditLog;
+use Models\RoundModel;
+use Models\Competition;
+use Models\Club;
+use Models\Team;
 
 class AdminController extends Controller {
 
@@ -16,6 +20,56 @@ class AdminController extends Controller {
 
     public function dashboard() {
         $this->view('admin/dashboard');
+    }
+
+    public function rounds($compId) {
+        $compModel = new Competition();
+        $comp = $compModel->getById($compId);
+        if (!$comp) {
+            Session::setFlash('error', 'Wettbewerb nicht gefunden.');
+            $this->redirect('/admin/dashboard');
+        }
+
+        $roundModel = new RoundModel();
+        $dates = $roundModel->getDatesByCompetition($compId);
+
+        // Mappe Datum auf Runde
+        $datesMap = [];
+        foreach ($dates as $d) {
+            $datesMap[$d['round_number']] = $d['match_date'];
+        }
+
+        // Ermittle max Runden
+        $db = \Core\Database::getInstance();
+        $maxRound = $db->query("SELECT MAX(round_number) as max_r FROM matches WHERE competition_id = ?", [$comp['id']])->fetch()['max_r'];
+        if (!$maxRound) $maxRound = 0;
+
+        $this->view('admin/rounds', [
+            'comp' => $comp,
+            'datesMap' => $datesMap,
+            'maxRound' => $maxRound
+        ]);
+    }
+
+    public function saveRounds($compId) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                Session::setFlash('error', 'Ungültige Sitzung.');
+                $this->redirect("/admin/rounds/$compId");
+            }
+
+            $dates = $_POST['dates'] ?? [];
+            $roundModel = new RoundModel();
+
+            foreach ($dates as $round => $date) {
+                if (!empty($date)) {
+                    $roundModel->saveDate($compId, $round, $date);
+                }
+            }
+
+            Session::setFlash('success', 'Rundentermine gespeichert.');
+            $this->redirect("/admin/rounds/$compId");
+        }
     }
 
     public function clubs() {
@@ -97,6 +151,128 @@ class AdminController extends Controller {
         $this->redirect('/admin/clubs');
     }
 
+    public function editUser($id) {
+        if ($id == 1 && Auth::id() != 1) {
+            Session::setFlash('error', 'Haupt-Admin kann nur von sich selbst bearbeitet werden.');
+            $this->redirect('/admin/clubs');
+        }
+
+        $userModel = new User();
+        $user = $userModel->getById($id);
+
+        if (!$user) {
+            Session::setFlash('error', 'User nicht gefunden.');
+            $this->redirect('/admin/clubs');
+        }
+
+        $db = \Core\Database::getInstance();
+        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                 Session::setFlash('error', 'Sitzung abgelaufen.');
+                 $this->redirect("/admin/editUser/$id");
+             }
+
+             $username = $this->input('username');
+             $password = $this->input('password'); // Optional
+             $club_id = $this->input('club_id') ?: null;
+             $role = $club_id ? 'verein' : 'admin';
+
+             if ($username) {
+                 try {
+                     $userModel->update($id, $username, $role, $club_id);
+
+                     if (!empty($password)) {
+                         $userModel->updatePassword($id, $password);
+                     }
+
+                     (new AuditLog())->log('user_editiert', "ID: $id ($username)");
+                     Session::setFlash('success', 'Benutzer gespeichert.');
+                     $this->redirect('/admin/clubs');
+                 } catch (\Exception $e) {
+                     Session::setFlash('error', 'Fehler: Username vergeben?');
+                 }
+             }
+        }
+
+        $this->view('admin/edit_user', ['user' => $user, 'clubs' => $clubs]);
+    }
+
+    public function editClub($id) {
+        $clubModel = new Club();
+        $club = $clubModel->getById($id);
+
+        if (!$club) {
+            Session::setFlash('error', 'Verein nicht gefunden.');
+            $this->redirect('/admin/clubs');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                 Session::setFlash('error', 'Sitzung abgelaufen.');
+                 $this->redirect("/admin/editClub/$id");
+             }
+
+             $name = $this->input('name');
+             if ($name) {
+                 try {
+                     $clubModel->update($id, $name);
+                     (new AuditLog())->log('verein_editiert', "$id -> $name");
+                     Session::setFlash('success', 'Verein gespeichert.');
+                     $this->redirect('/admin/clubs');
+                 } catch (\Exception $e) {
+                     Session::setFlash('error', 'Fehler: Name vergeben?');
+                 }
+             }
+        }
+
+        $this->view('admin/edit_club', ['club' => $club]);
+    }
+
+    public function editShooter($id) {
+        $shooterModel = new Shooter();
+        $shooter = $shooterModel->getById($id);
+
+        if (!$shooter) {
+             Session::setFlash('error', 'Schütze nicht gefunden.');
+             $this->redirect('/admin/shooters');
+        }
+
+        $db = \Core\Database::getInstance();
+        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
+        $teams = $db->query("SELECT t.*, c.name as club_name FROM teams t JOIN clubs c ON t.club_id = c.id ORDER BY c.name, t.name")->fetchAll();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                 Session::setFlash('error', 'Sitzung abgelaufen.');
+                 $this->redirect("/admin/editShooter/$id");
+            }
+
+            $first = $this->input('first_name');
+            $last = $this->input('last_name');
+            $clubId = $this->input('club_id');
+            $teamId = $this->input('team_id') ?: null;
+
+            if ($first && $last && $clubId) {
+                $shooterModel->update($id, $first, $last, $clubId, $teamId);
+                (new AuditLog())->log('schuetze_editiert', "ID: $id");
+                Session::setFlash('success', 'Schütze gespeichert.');
+                $this->redirect('/admin/shooters');
+            }
+        }
+
+        $this->view('admin/edit_shooter', ['shooter' => $shooter, 'clubs' => $clubs, 'teams' => $teams]);
+    }
+
+    public function resetMatch($id) {
+        $matchModel = new \Models\MatchModel();
+        $matchModel->resetScore($id);
+        (new AuditLog())->log('match_reset', "Match ID: $id");
+        Session::setFlash('success', 'Match zurückgesetzt.');
+        $this->redirect('/league/matches');
+    }
+
     public function shooters() {
         $shooterModel = new Shooter();
         $shooters = $shooterModel->getAllWithClubAndTeam();
@@ -153,5 +329,53 @@ class AdminController extends Controller {
             Session::setFlash('success', 'Status geändert.');
         }
         $this->redirect('/admin/shooters');
+    }
+
+    public function teams() {
+        $teamModel = new Team();
+        $teams = $teamModel->getAllWithDetails();
+        $this->view('admin/teams', ['teams' => $teams]);
+    }
+
+    public function deleteTeam($id) {
+        $teamModel = new Team();
+        $teamModel->delete($id);
+        (new AuditLog())->log('team_geloescht', "ID: $id");
+        Session::setFlash('success', 'Mannschaft gelöscht.');
+        $this->redirect('/admin/teams');
+    }
+
+    public function editTeam($id) {
+        $teamModel = new Team();
+        $team = $teamModel->getById($id);
+
+        if (!$team) {
+            Session::setFlash('error', 'Mannschaft nicht gefunden.');
+            $this->redirect('/admin/teams');
+        }
+
+        $db = \Core\Database::getInstance();
+        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
+        $competitions = $db->query("SELECT * FROM competitions WHERE status != 'beendet' ORDER BY created_at DESC")->fetchAll();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
+                 Session::setFlash('error', 'Sitzung abgelaufen.');
+                 $this->redirect("/admin/editTeam/$id");
+            }
+
+            $name = $this->input('name');
+            $clubId = $this->input('club_id');
+            $compId = $this->input('competition_id');
+
+            if ($name && $clubId && $compId) {
+                $teamModel->update($id, $name, $clubId, $compId);
+                (new AuditLog())->log('team_editiert', "ID: $id ($name)");
+                Session::setFlash('success', 'Mannschaft gespeichert.');
+                $this->redirect('/admin/teams');
+            }
+        }
+
+        $this->view('admin/edit_team', ['team' => $team, 'clubs' => $clubs, 'competitions' => $competitions]);
     }
 }
