@@ -41,7 +41,7 @@
         <tr>
             <td><?= htmlspecialchars($c['name']) ?></td>
             <td><?= htmlspecialchars($c['season']) ?></td>
-            <td><?= ucfirst($c['status']) ?></td>
+            <td><?= ucfirst($c['status'] ?? 'Unbekannt') ?></td>
             <td> - </td> <!-- Könnte man noch zählen -->
             <td>
                 <a href="<?= BASIS_URL ?>/league/details/<?= $c['id'] ?>" class="btn">Verwalten</a>

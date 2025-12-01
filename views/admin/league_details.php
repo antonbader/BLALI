@@ -7,7 +7,7 @@
     <div style="flex: 1; min-width: 300px;">
         <h2>Mannschaften</h2>
 
-        <?php if ($comp['status'] === 'geplant'): ?>
+        <?php if ($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert'): ?>
         <form method="post" action="<?= BASIS_URL ?>/league/addTeam/<?= $comp['id'] ?>" style="background: #f9f9f9; padding: 15px; margin-bottom: 15px;">
             <input type="hidden" name="csrf_token" value="<?= \Core\Session::generateCsrfToken() ?>">
             <div class="form-group">
@@ -34,9 +34,9 @@
             <?php endforeach; ?>
         </ul>
 
-        <?php if ($comp['status'] === 'geplant' && count($teams) >= 2 && count($teams) % 2 == 0): ?>
+        <?php if (($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert') && count($teams) >= 2 && count($teams) % 2 == 0): ?>
             <a href="<?= BASIS_URL ?>/league/generateSchedule/<?= $comp['id'] ?>" class="btn" onclick="return confirm('Wettkampfplan generieren? Dies setzt den Status auf AKTIV.')">Wettkampfplan generieren</a>
-        <?php elseif ($comp['status'] === 'geplant'): ?>
+        <?php elseif ($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert'): ?>
             <p style="color: orange;">Um den Wettkampfplan zu generieren, werden mindestens 2 Teams benötigt (gerade Anzahl).</p>
         <?php endif; ?>
 
