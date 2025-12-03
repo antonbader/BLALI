@@ -365,9 +365,7 @@ class AdminController extends Controller {
             $this->redirect('/admin/teams');
         }
 
-        $db = \Core\Database::getInstance();
-        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
-        $competitions = $db->query("SELECT * FROM competitions WHERE status != 'beendet' ORDER BY created_at DESC")->fetchAll();
+        $shooterModel = new Shooter();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!Session::verifyCsrfToken($this->input('csrf_token'))) {
@@ -375,18 +373,62 @@ class AdminController extends Controller {
                  $this->redirect("/admin/editTeam/$id");
             }
 
-            $name = $this->input('name');
-            $clubId = $this->input('club_id');
-            $compId = $this->input('competition_id');
+            $action = $this->input('action');
 
-            if ($name && $clubId && $compId) {
-                $teamModel->update($id, $name, $clubId, $compId);
-                (new AuditLog())->log('team_editiert', "ID: $id ($name)");
-                Session::setFlash('success', 'Mannschaft gespeichert.');
-                $this->redirect('/admin/teams');
+            if ($action === 'add_member') {
+                $shooterId = $this->input('shooter_id');
+                if ($shooterId) {
+                    $shooter = $shooterModel->getById($shooterId);
+                    if ($shooter && $shooter['club_id'] == $team['club_id'] && empty($shooter['team_id'])) {
+                        $shooterModel->updateTeam($shooterId, $id);
+                        (new AuditLog())->log('team_member_added', "Team $id: Shooter $shooterId");
+                        Session::setFlash('success', 'Mitglied hinzugefügt.');
+                    } else {
+                        Session::setFlash('error', 'Ungültiger Schütze ausgewählt.');
+                    }
+                }
+                $this->redirect("/admin/editTeam/$id");
+            } elseif ($action === 'remove_member') {
+                $shooterId = $this->input('shooter_id');
+                if ($shooterId) {
+                    $shooter = $shooterModel->getById($shooterId);
+                    if ($shooter && $shooter['team_id'] == $id) {
+                        $shooterModel->updateTeam($shooterId, null);
+                        (new AuditLog())->log('team_member_removed', "Team $id: Shooter $shooterId removed");
+                        Session::setFlash('success', 'Mitglied entfernt.');
+                    } else {
+                        Session::setFlash('error', 'Schütze gehört nicht zu dieser Mannschaft.');
+                    }
+                }
+                $this->redirect("/admin/editTeam/$id");
+            } else {
+                $name = $this->input('name');
+                $clubId = $this->input('club_id');
+                $compId = $this->input('competition_id');
+
+                if ($name && $clubId && $compId) {
+                    $teamModel->update($id, $name, $clubId, $compId);
+                    (new AuditLog())->log('team_editiert', "ID: $id ($name)");
+                    Session::setFlash('success', 'Mannschaft gespeichert.');
+                    $this->redirect('/admin/teams');
+                }
             }
         }
 
-        $this->view('admin/edit_team', ['team' => $team, 'clubs' => $clubs, 'competitions' => $competitions]);
+        $db = \Core\Database::getInstance();
+        $clubs = $db->query("SELECT * FROM clubs ORDER BY name")->fetchAll();
+        $competitions = $db->query("SELECT * FROM competitions WHERE status != 'beendet' ORDER BY created_at DESC")->fetchAll();
+
+        // Mitglieder laden
+        $members = $shooterModel->getByTeam($id);
+        $availableShooters = $shooterModel->getAvailableForClub($team['club_id']);
+
+        $this->view('admin/edit_team', [
+            'team' => $team,
+            'clubs' => $clubs,
+            'competitions' => $competitions,
+            'members' => $members,
+            'availableShooters' => $availableShooters
+        ]);
     }
 }

@@ -13,6 +13,16 @@ class Shooter extends Model {
         return $this->db->query($sql, [$clubId])->fetchAll();
     }
 
+    public function getAvailableForClub($clubId) {
+        return $this->db->query("
+            SELECT * FROM shooters
+            WHERE club_id = ?
+            AND status = 'aktiv'
+            AND team_id IS NULL
+            ORDER BY last_name, first_name
+        ", [$clubId])->fetchAll();
+    }
+
     public function getByTeam($teamId) {
         return $this->db->query("SELECT * FROM shooters WHERE team_id = ? AND status = 'aktiv' ORDER BY last_name, first_name", [$teamId])->fetchAll();
     }
