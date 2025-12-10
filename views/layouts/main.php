@@ -66,7 +66,7 @@
     </main>
 
     <footer>
-        &copy; <?= date('Y') ?> BLALI - Blasrohr-Liga
+        &copy; <?= APP_START_YEAR ?><?= (defined('APP_END_YEAR') && APP_END_YEAR) ? ' - ' . APP_END_YEAR : '' ?> <?= APP_NAME ?> - v<?= APP_VERSION ?>
     </footer>
 
     <script src="<?= BASIS_URL ?>/js/main.js"></script>
