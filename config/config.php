@@ -18,7 +18,7 @@ define('BASIS_URL', $protocol . "://" . $host . $scriptDir);
 define('ROOT_PFAD', dirname(__DIR__));
 define('VIEW_PFAD', ROOT_PFAD . '/views');
 define('APP_NAME', 'BLALI - Blasrohr-Liga');
-define('APP_VERSION', '1.0.0');
+define('APP_VERSION', '0.2.1');
 define('APP_START_YEAR', 2025);
 define('APP_END_YEAR', null);
 
