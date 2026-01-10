@@ -20,7 +20,7 @@
     *   [4.4 Wettbewerbsmanagement](#44-wettbewerbsmanagement)
         *   [4.4.1 Neuen Wettbewerb anlegen](#441-neuen-wettbewerb-anlegen)
         *   [4.4.2 Mannschaften zuweisen](#442-mannschaften-zuweisen)
-        *   [4.4.3 Spielplan generieren (Round Robin)](#443-spielplan-generieren-round-robin)
+        *   [4.4.3 Wettkampfplan generieren (Round Robin)](#443-wettkampfplan-generieren-round-robin)
     *   [4.5 Ergebnisverwaltung und Freigabe](#45-ergebnisverwaltung-und-freigabe)
     *   [4.6 Wettbewerbsstatus und Archivierung](#46-wettbewerbsstatus-und-archivierung)
 
@@ -138,9 +138,9 @@ Alle Sportler müssen zentral erfasst werden.
 1.  Im Bereich "Teilnehmende Mannschaften" fügen Sie Teams hinzu.
 2.  Wählen Sie den Verein aus und vergeben Sie einen Mannschaftsnamen (z.B. "SV Holzhausen I").
 3.  Wiederholen Sie dies für alle Teilnehmer.
-4.  **Achtung**: Für den Spielplan-Algorithmus wird aktuell eine gerade Anzahl an Mannschaften benötigt. Fügen Sie ggf. ein "Freilos"-Team & -Verein hinzu, falls die Anzahl ungerade ist.
+4.  Bei einer ungeraden Anzahl an Mannschaften wird automatisch ein "Spielfrei" System angewendet. Eine Mannschaft hat dann pro Runde kein Match.
 
-#### 4.4.3 Spielplan generieren (Round Robin)
+#### 4.4.3 Wettkampfplan generieren (Round Robin)
 Wenn alle Mannschaften angelegt sind:
 1.  Klicken Sie in der Wettbewerbs-Verwaltung auf **"Wettkampfplan generieren"**.
 2.  Bestätigen Sie den Vorgang.
