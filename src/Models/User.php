@@ -45,7 +45,6 @@ class User extends Model {
     }
 
     public function delete($id) {
-        // Verhindern, dass man sich selbst oder den Haupt-Admin löscht, müsste im Controller geprüft werden
         return $this->db->query("DELETE FROM users WHERE id = ?", [$id]);
     }
 }
