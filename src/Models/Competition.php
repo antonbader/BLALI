@@ -55,14 +55,16 @@ class Competition extends Model {
     // Wettkampfplan Generierung (Round Robin)
     public function generateSchedule($competitionId) {
         $teams = $this->getTeams($competitionId);
-        $numTeams = count($teams);
+        // Indizes der Teams
+        $teamIndices = array_column($teams, 'id');
+        $numTeams = count($teamIndices);
 
         if ($numTeams < 2) return false;
 
-        // Wenn ungerade, Dummy-Team hinzufügen (hier: Warnung oder Fehler, da laut Plan gerade Anzahl gefordert)
-        // Plan sagt: "Sicherstellen, dass nur eine gerade Anzahl an Mannschaften zugelassen wird"
+        // Wenn ungerade, Dummy-Team hinzufügen um "Spielfrei" zu ermöglichen
         if ($numTeams % 2 != 0) {
-            throw new \Exception("Ungerade Anzahl an Mannschaften. Bitte eine Mannschaft hinzufügen oder entfernen.");
+            $teamIndices[] = -1; // Dummy ID für Spielfrei
+            $numTeams++; // Anzahl ist nun gerade
         }
 
         // Alte Matches löschen? Nur wenn noch keine Ergebnisse da sind.
@@ -71,10 +73,6 @@ class Competition extends Model {
 
         $rounds = $numTeams - 1; // Anzahl Spieltage pro Runde (Hinrunde)
 
-        // Circle Method
-        // Indizes der Teams
-        $teamIndices = array_column($teams, 'id');
-
         $matches = [];
 
         // Hinrunde
@@ -82,6 +80,11 @@ class Competition extends Model {
             for ($i = 0; $i < $numTeams / 2; $i++) {
                 $home = $teamIndices[$i];
                 $guest = $teamIndices[$numTeams - 1 - $i];
+
+                // Dummy-Matches überspringen (Spielfrei)
+                if ($home === -1 || $guest === -1) {
+                    continue;
+                }
 
                 // Match erstellen
                 // Runde = $r + 1
