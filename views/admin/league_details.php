@@ -34,10 +34,10 @@
             <?php endforeach; ?>
         </ul>
 
-        <?php if (($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert') && count($teams) >= 2 && count($teams) % 2 == 0): ?>
+        <?php if (($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert') && count($teams) >= 2): ?>
             <a href="<?= BASIS_URL ?>/league/generateSchedule/<?= $comp['id'] ?>" class="btn" onclick="return confirm('Wettkampfplan generieren? Dies setzt den Status auf AKTIV.')">Wettkampfplan generieren</a>
         <?php elseif ($comp['status'] === 'geplant' || $comp['status'] === 'deaktiviert'): ?>
-            <p style="color: orange;">Um den Wettkampfplan zu generieren, werden mindestens 2 Teams benötigt (gerade Anzahl).</p>
+            <p style="color: orange;">Um den Wettkampfplan zu generieren, werden mindestens 2 Teams benötigt.</p>
         <?php endif; ?>
 
         <?php if ($comp['status'] === 'aktiv'): ?>
